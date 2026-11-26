@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings · TASKFLOW</title>
+  <meta name="description" content="TASKFLOW – Manage Your Day Smarter.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="responsive.css">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tf-theme') || 'light'; } catch (e) {}</script>
+</head>
+<body data-page="settings">
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+
+      <div class="page-loader" id="pageLoader" role="status" aria-label="Loading"><div class="spinner"></div></div>
+
+      <main class="content" id="content" hidden>
+      <div class="settings-layout">
+        <nav class="settings-nav" aria-label="Settings sections">
+          <a href="#profile" class="active"><i data-lucide="user"></i>Profile</a>
+          <a href="#account"><i data-lucide="shield"></i>Account &amp; security</a>
+          <a href="#preferences"><i data-lucide="sliders-horizontal"></i>Preferences</a>
+          <a href="#categories"><i data-lucide="tags"></i>Categories</a>
+          <a href="#session"><i data-lucide="log-out"></i>Session</a>
+        </nav>
+
+        <div class="settings-sections">
+          <!-- PROFILE -->
+          <section class="card" id="profile">
+            <div class="card-header"><div><h2>Profile</h2><p>How you appear in TASKFLOW</p></div></div>
+            <div class="profile-head">
+              <span id="profileAvatar"></span>
+              <div>
+                <h3 id="profileName"></h3>
+                <p id="profileEmail"></p>
+                <p id="profileSince" class="muted"></p>
+              </div>
+            </div>
+            <form id="profileForm" novalidate>
+              <div class="form-message" hidden></div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="fullName">Full name</label>
+                  <input id="fullName" name="fullName" maxlength="60" autocomplete="name">
+                </div>
+                <div class="field">
+                  <label for="avatarUrl">Avatar image URL <span class="muted">(optional)</span></label>
+                  <input id="avatarUrl" name="avatarUrl" type="url" placeholder="https://…" maxlength="500">
+                </div>
+              </div>
+              <div class="form-actions"><button type="submit" class="btn btn-primary"><i data-lucide="save"></i>Save profile</button></div>
+            </form>
+          </section>
+
+          <!-- ACCOUNT -->
+          <section class="card" id="account">
+            <div class="card-header"><div><h2>Account &amp; security</h2><p>Update your login email and password</p></div></div>
+            <form id="emailForm" novalidate>
+              <div class="form-message" hidden></div>
+              <div class="field">
+                <label for="newEmail">Email address</label>
+                <input id="newEmail" name="email" type="email" autocomplete="email">
+                <p class="field-hint">You'll need to confirm the change from your email inbox.</p>
+              </div>
+              <div class="form-actions"><button type="submit" class="btn btn-secondary"><i data-lucide="mail"></i>Update email</button></div>
+            </form>
+            <hr style="border:0;border-top:1px solid var(--border);margin:22px 0">
+            <form id="passwordForm" novalidate>
+              <div class="form-message" hidden></div>
+              <div class="field">
+                <label for="currentPassword">Current password</label>
+                <input id="currentPassword" name="current" type="password" autocomplete="current-password">
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="newPassword">New password</label>
+                  <input id="newPassword" name="password" type="password" autocomplete="new-password">
+                  <div class="strength" id="pwStrength"><div class="strength-bars"><i></i><i></i><i></i><i></i></div><span class="strength-label"></span></div>
+                </div>
+                <div class="field">
+                  <label for="confirmPassword">Confirm new password</label>
+                  <input id="confirmPassword" name="confirm" type="password" autocomplete="new-password">
+                </div>
+              </div>
+              <div class="form-actions"><button type="submit" class="btn btn-secondary"><i data-lucide="key-round"></i>Change password</button></div>
+            </form>
+          </section>
+
+          <!-- PREFERENCES -->
+          <section class="card" id="preferences">
+            <div class="card-header"><div><h2>Preferences</h2><p>Saved to your account and applied on every device</p></div></div>
+            <div class="setting-row" style="flex-wrap:wrap">
+              <div><h4>Theme</h4><p>Choose light or dark mode.</p></div>
+              <div class="theme-options" role="radiogroup" aria-label="Theme">
+                <label class="theme-option"><input type="radio" name="theme" value="light"><span class="preview"><span class="preview-box light"></span><span><i data-lucide="sun"></i>Light</span></span></label>
+                <label class="theme-option"><input type="radio" name="theme" value="dark"><span class="preview"><span class="preview-box dark"></span><span><i data-lucide="moon"></i>Dark</span></span></label>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><h4>Default task sorting</h4><p>How the task list is ordered when you open it.</p></div>
+              <select class="select" id="defaultSort" style="width:auto" aria-label="Default task sorting">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="due_date">Due date</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div><h4>Due-today reminder</h4><p>A browser notification listing tasks due today, once a day when you open TASKFLOW.</p></div>
+              <label class="switch"><input type="checkbox" data-pref="due_today_reminder" aria-label="Due-today reminder"><span></span></label>
+            </div>
+            <div class="setting-row">
+              <div><h4>Overdue alerts</h4><p>Show an alert on the dashboard when tasks are overdue.</p></div>
+              <label class="switch"><input type="checkbox" data-pref="overdue_alerts" aria-label="Overdue alerts"><span></span></label>
+            </div>
+            <div class="setting-row">
+              <div><h4>Completion celebrations</h4><p>A little 🎉 when you complete a task.</p></div>
+              <label class="switch"><input type="checkbox" data-pref="completion_celebration" aria-label="Completion celebrations"><span></span></label>
+            </div>
+          </section>
+
+          <!-- CATEGORIES -->
+          <section class="card" id="categories">
+            <div class="card-header"><div><h2>Categories</h2><p>Create, rename, recolour or delete your categories</p></div></div>
+            <ul class="category-list" id="categoryList"></ul>
+            <form class="category-form" id="categoryForm" novalidate>
+              <input type="color" class="color-input" name="color" value="#7c5cff" aria-label="Category colour">
+              <div class="field"><input name="name" maxlength="40" placeholder="New category name" aria-label="New category name" autocomplete="off"></div>
+              <button type="submit" class="btn btn-primary"><i data-lucide="plus"></i>Add</button>
+            </form>
+          </section>
+
+          <!-- SESSION -->
+          <section class="card danger-zone" id="session">
+            <div class="setting-row">
+              <div><h4>Log out</h4><p>End your session on this device.</p></div>
+              <button class="btn btn-danger" id="logoutBtn"><i data-lucide="log-out"></i>Log out</button>
+            </div>
+          </section>
+        </div>
+      </div>
+      </main>
+    </div>
+  </div>
+  <div id="toastContainer"></div>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="supabase.js"></script>
+  <script src="app.js"></script>
+  <script src="auth.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · TASKFLOW</title>
+  <meta name="description" content="TASKFLOW – Manage Your Day Smarter.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="responsive.css">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('tf-theme') || 'light'; } catch (e) {}</script>
+</head>
+<body data-page="dashboard">
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+
+      <div class="page-loader" id="pageLoader" role="status" aria-label="Loading"><div class="spinner"></div></div>
+
+      <main class="content" id="content" hidden>
+      <section class="welcome">
+        <div>
+          <h2 id="welcomeTitle">Welcome back</h2>
+          <p id="welcomeText">Here's your day at a glance.</p>
+          <div class="overview-pills" id="overviewPills"></div>
+        </div>
+        <button class="btn" id="quickAddBtn"><i data-lucide="plus"></i>Quick Add Task</button>
+      </section>
+
+      <section class="stats-grid" id="statsGrid" aria-label="Task statistics"></section>
+
+      <div class="dash-grid">
+        <section class="card span-8">
+          <div class="card-header">
+            <div><h2>Today's overview</h2><p id="todayDate"></p></div>
+            <a href="tasks.html?view=today" class="card-link">View all<i data-lucide="chevron-right"></i></a>
+          </div>
+          <div id="todayList"></div>
+        </section>
+
+        <section class="card span-4 progress-card">
+          <div class="card-header" style="width:100%"><h2>Task completion</h2></div>
+          <div id="completionRing"></div>
+          <div class="progress-meta" id="progressMeta"></div>
+        </section>
+
+        <section class="card span-8">
+          <div class="card-header">
+            <div><h2>Weekly productivity</h2><p>Tasks completed in the last 7 days</p></div>
+            <a href="analytics.html" class="card-link">Analytics<i data-lucide="chevron-right"></i></a>
+          </div>
+          <div id="weeklyChart"></div>
+        </section>
+
+        <section class="card span-4">
+          <div class="card-header"><div><h2>Priority distribution</h2><p>Open tasks by priority</p></div></div>
+          <div id="priorityChart"></div>
+        </section>
+
+        <section class="card span-6">
+          <div class="card-header">
+            <h2>Recent tasks</h2>
+            <a href="tasks.html" class="card-link">All tasks<i data-lucide="chevron-right"></i></a>
+          </div>
+          <div id="recentList"></div>
+        </section>
+
+        <section class="card span-6">
+          <div class="card-header">
+            <h2>Upcoming deadlines</h2>
+            <a href="calendar.html" class="card-link">Calendar<i data-lucide="chevron-right"></i></a>
+          </div>
+          <div id="deadlineList"></div>
+        </section>
+      </div>
+      </main>
+    </div>
+  </div>
+  <div id="toastContainer"></div>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+  <script src="supabase.js"></script>
+  <script src="app.js"></script>
+  <script src="auth.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

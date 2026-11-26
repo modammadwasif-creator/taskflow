@@ -1,0 +1,330 @@
+/* =====================================================================
+   TASKFLOW – Responsive layout
+   Breakpoints: 1280 (small laptop) · 1024 (tablet) · 768 (large phone)
+                · 480 (phone)
+   ===================================================================== */
+
+/* ---------- Small laptops ---------- */
+@media (max-width: 1280px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .span-8,
+  .span-4 {
+    grid-column: span 6;
+  }
+  .topbar-search {
+    width: 220px;
+  }
+  .cal-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+/* ---------- Tablets: sidebar becomes a slide-in drawer ---------- */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+  .app.sidebar-open .sidebar {
+    transform: none;
+  }
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(13, 15, 26, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .app.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sidebar-close,
+  .menu-btn {
+    display: inline-grid;
+  }
+  .main {
+    margin-left: 0;
+  }
+  .topbar {
+    padding: 0 20px;
+  }
+  .content {
+    padding: 22px 20px;
+  }
+  .span-8,
+  .span-4,
+  .span-6 {
+    grid-column: span 12;
+  }
+  .cal-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-nav {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .settings-nav a {
+    white-space: nowrap;
+  }
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+  .auth-hero {
+    display: none;
+  }
+  .auth-card .mobile-brand {
+    display: inline-flex;
+  }
+}
+
+/* ---------- Large phones ---------- */
+@media (max-width: 768px) {
+  :root {
+    --topbar-h: 64px;
+  }
+  body {
+    font-size: 14.5px;
+  }
+  .topbar {
+    gap: 6px;
+    padding: 0 12px;
+  }
+  .topbar-title h1 {
+    font-size: 18px;
+  }
+  .topbar-title p {
+    display: none;
+  }
+  .topbar-search {
+    display: none;
+  }
+  .topbar-new {
+    width: 40px;
+    padding: 0;
+  }
+  .topbar-new span {
+    display: none;
+  }
+  .content {
+    padding: 16px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .stats-grid .stat-card:first-child {
+    grid-column: span 2;
+  }
+  .stat-value {
+    font-size: 26px;
+  }
+  .card {
+    padding: 18px 16px;
+  }
+  .welcome {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 20px;
+  }
+  .welcome h2 {
+    font-size: 21px;
+  }
+  .dash-grid {
+    gap: 16px;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .task-item {
+    gap: 10px;
+    padding: 12px;
+    align-items: flex-start;
+  }
+  .task-check {
+    margin-top: 2px;
+  }
+  .task-item > .badge {
+    display: none;
+  }
+  .task-actions {
+    flex-direction: column;
+  }
+  .task-actions .icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .toolbar .select {
+    flex: 1 1 calc(50% - 5px);
+  }
+  .donut-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .donut {
+    align-self: center;
+  }
+  .bar-chart {
+    height: 190px;
+    gap: 5px;
+  }
+  .bar-label {
+    font-size: 10.5px;
+  }
+  .bar-value {
+    font-size: 10.5px;
+  }
+
+  /* Calendar: month view shows dots instead of task pills */
+  .cal-day {
+    min-height: 64px;
+    padding: 6px 4px;
+    align-items: center;
+  }
+  .cal-pill,
+  .cal-more {
+    display: none;
+  }
+  .cal-dots {
+    display: flex;
+    justify-content: center;
+  }
+  .cal-weekdays div {
+    padding: 10px 2px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .cal-toolbar h2 {
+    flex-basis: 100%;
+    order: -1;
+    font-size: 18px;
+  }
+  .view-switch {
+    margin-left: auto;
+  }
+  /* Week view becomes a vertical agenda */
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+  .week-col {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    flex-direction: row;
+  }
+  .week-head {
+    width: 72px;
+    flex-shrink: 0;
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+  }
+  .week-add {
+    opacity: 1;
+    margin-top: 0;
+  }
+  .day-slot {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .day-time {
+    padding-top: 0;
+  }
+
+  .modal-overlay {
+    padding: 0;
+    align-items: end;
+  }
+  .modal {
+    max-height: 92vh;
+    border-radius: 20px 20px 0 0;
+    max-width: none !important;
+    transform: translateY(40px);
+  }
+  .modal-body {
+    padding: 16px 18px;
+  }
+  .modal-header {
+    padding: 16px 14px 0 18px;
+  }
+  .modal-footer {
+    padding: 12px 18px calc(16px + env(safe-area-inset-bottom));
+    flex-wrap: wrap;
+  }
+  .setting-row {
+    align-items: flex-start;
+  }
+  #toastContainer {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 14px;
+    gap: 10px;
+  }
+  .stat-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .auth-main {
+    padding: 28px 18px;
+    align-items: flex-start;
+  }
+  .auth-card h1 {
+    font-size: 24px;
+  }
+  .theme-options {
+    grid-template-columns: 1fr 1fr;
+  }
+  .profile-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .category-form {
+    flex-wrap: wrap;
+  }
+  .category-form .field {
+    flex-basis: calc(100% - 52px);
+  }
+  .category-form .btn {
+    width: 100%;
+  }
+  .modal-footer .btn {
+    flex: 1;
+  }
+  .modal-footer .spacer {
+    display: none;
+  }
+  .confirm-body {
+    flex-direction: column;
+  }
+  .form-actions .btn {
+    flex: 1;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

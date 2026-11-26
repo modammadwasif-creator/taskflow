@@ -12,7 +12,7 @@
    ===================================================================== */
 
 const SUPABASE_URL = 'https://vynhcjnfheyvpooctbey.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_ANON_KEY = 'sb_publishable_VxqFxRA9rQ6Z9__rQQvVJQ_0rLqyXh5';
 
 /** True once real credentials have been filled in above. */
 const isSupabaseConfigured =

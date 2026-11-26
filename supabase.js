@@ -1,4 +1,4 @@
-/* =====================================================================
+  /* =====================================================================
    TASKFLOW – Supabase configuration
    ---------------------------------------------------------------------
    ACTION REQUIRED: replace the two placeholder values below with your
@@ -11,7 +11,7 @@
    every visitor's browser; your data is protected by Row Level Security.
    ===================================================================== */
 
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_URL = 'https://vynhcjnfheyvpooctbey.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 /** True once real credentials have been filled in above. */

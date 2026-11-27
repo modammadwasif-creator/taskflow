@@ -17,11 +17,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // One delegated handler per task list widget
   ['#todayList', '#recentList'].forEach((sel) => bindTaskList($(sel), () => dashTasks, loadDashboard));
-  $('#deadlineList').addEventListener('click', (e) => {
-    const item = e.target.closest('[data-id]');
-    if (!item) return;
-    const task = dashTasks.find((t) => t.id === item.dataset.id);
-    if (task) openTaskDetails(task, loadDashboard);
+  // Deadline and activity rows open the task's details (click or Enter)
+  ['#deadlineList', '#activityList'].forEach((sel) => {
+    const open = (e) => {
+      if (e.type === 'keydown' && e.key !== 'Enter') return;
+      const item = e.target.closest('[data-id]');
+      if (!item) return;
+      const task = dashTasks.find((t) => t.id === item.dataset.id);
+      if (task) openTaskDetails(task, loadDashboard);
+    };
+    $(sel).addEventListener('click', open);
+    $(sel).addEventListener('keydown', open);
   });
 
   revealContent();
@@ -50,7 +56,42 @@ async function loadDashboard() {
   renderPriority();
   renderRecent();
   renderDeadlines();
+  renderActivity();
   refreshIcons();
+}
+
+/**
+ * Recent activity built from each task's timestamps (created, completed,
+ * edited). Deleted tasks are gone from the database, so they don't appear.
+ */
+function renderActivity() {
+  const events = [];
+  dashTasks.forEach((t) => {
+    events.push({ task: t, at: t.created_at, kind: 'created' });
+    if (t.completed_at) events.push({ task: t, at: t.completed_at, kind: 'completed' });
+    const edited = new Date(t.updated_at) - new Date(t.created_at) > 60000;
+    const sameAsCompletion = t.completed_at && Math.abs(new Date(t.updated_at) - new Date(t.completed_at)) < 60000;
+    if (edited && !sameAsCompletion) events.push({ task: t, at: t.updated_at, kind: 'updated' });
+  });
+  events.sort((a, b) => new Date(b.at) - new Date(a.at));
+
+  const meta = {
+    created: { icon: 'plus', tone: 'tone-blue', verb: 'Created' },
+    completed: { icon: 'check', tone: 'tone-green', verb: 'Completed' },
+    updated: { icon: 'pencil', tone: 'tone-amber', verb: 'Updated' },
+  };
+  $('#activityList').innerHTML = events.length
+    ? `<ul class="activity-list">${events
+        .slice(0, 8)
+        .map(
+          (e) => `<li class="activity-item" data-id="${e.task.id}" tabindex="0">
+            <span class="activity-icon ${meta[e.kind].tone}"><i data-lucide="${meta[e.kind].icon}"></i></span>
+            <span class="activity-text">${meta[e.kind].verb} <strong>${escapeHtml(e.task.title)}</strong></span>
+            <span class="activity-time" title="${formatDateTime(e.at)}">${timeAgo(e.at)}</span>
+          </li>`
+        )
+        .join('')}</ul>`
+    : emptyStateHTML({ icon: 'history', title: 'No activity yet', text: 'Creating, editing and completing tasks will show up here.' });
 }
 
 /** All dashboard numbers in one place. */
@@ -64,6 +105,7 @@ function computeStats(tasks) {
     pending: tasks.filter((t) => t.status === 'pending').length,
     inProgress: tasks.filter((t) => t.status === 'in_progress').length,
     overdue: tasks.filter(isOverdue).length,
+    upcoming: tasks.filter((t) => t.due_date > today && t.status !== 'completed').length,
     today: todayTasks,
     todayDone: todayTasks.filter((t) => t.status === 'completed').length,
     completedToday: completed.filter((t) => t.completed_at && toDateStr(new Date(t.completed_at)) === today).length,
@@ -100,6 +142,7 @@ function renderStats(s) {
     card('tasks.html?view=completed', 'tone-green', 'check-circle-2', 'Completed', s.completed) +
     card('tasks.html?view=pending', 'tone-amber', 'clock', 'Pending', s.pending) +
     card('tasks.html?view=overdue', 'tone-red', 'alarm-clock', 'Overdue', s.overdue) +
+    card('tasks.html?view=upcoming', 'tone-purple', 'calendar-clock', 'Upcoming', s.upcoming) +
     card('tasks.html?view=today', 'tone-blue', 'sun', "Today's Tasks", s.today.length);
 }
 

@@ -1,4 +1,4 @@
-# TASKFLOW: Manage Your Day Smarter.
+ # TASKFLOW: Manage Your Day Smarter.
 
 TASKFLOW is a task-management web app built with **HTML, CSS and vanilla JavaScript**. It uses **Supabase** for authentication, the PostgreSQL database and Row Level Security (RLS). It needs no build tools, frameworks or paid services.
 
@@ -58,6 +58,34 @@ Then open `register.html`, create an account and start adding tasks.
 ### 6. Deploy (optional, free)
 Upload the folder to **Netlify** (drag-and-drop), **Vercel**, **Cloudflare Pages** or **GitHub Pages**. Add the live URL to the Supabase Site URL and Redirect URLs (step 4).
 
+### 7. Turn on the Admin area (user management)
+This step is additive: it does **not** change or delete any existing table, user or task.
+
+1. In Supabase open **SQL Editor → New query**, paste the whole of `supabase-admin.sql` and click **Run**. You should see "Success".
+2. **Make yourself admin.** Register in the app first. Then run this in a new query, using your own email:
+
+```sql
+insert into public.admin_users (user_id)
+select id from auth.users where email = 'your-email@example.com'
+on conflict (user_id) do nothing;
+```
+
+3. Log out and log in again. A **User Management** link appears in the sidebar under *Administration*.
+
+**How it is secured:**
+- Admins are listed in `admin_users`. The browser can't read or write that table, so nobody can make themselves admin from the app. Only the SQL Editor can add or remove admins.
+- The admin data comes from database functions (`admin_list_users`, `admin_user_stats`, `admin_get_user`). Each one first checks the caller's verified login with `is_admin()`. Everyone else gets **"Not authorized"** and receives no data, even if they change the JavaScript or set a fake "admin" value in localStorage.
+- No `service_role` / secret key is used anywhere, and none is needed.
+- Admins see account details (name, email, ID, sign-up date, last sign-in, verification status) and **task counts only**. RLS still keeps every user's task titles and descriptions private, including from admins.
+
+To remove an admin:
+```sql
+delete from public.admin_users
+where user_id = (select id from auth.users where email = 'their-email@example.com');
+```
+
+> This uses secure database functions instead of an Edge Function. They run on Supabase's server just like an Edge Function would, but you don't need to install the Supabase CLI or deploy anything.
+
 ---
 
 ## Features
@@ -65,7 +93,8 @@ Upload the folder to **Netlify** (drag-and-drop), **Vercel**, **Cloudflare Pages
 | Area | What's included |
 |---|---|
 | **Auth** | Register, login, logout, forgot password, reset password via email link, email verification (with resend), persistent sessions, protected pages, redirect to login when signed out, redirect to dashboard when signed in, return to the requested page after login, sign-out syncs across tabs |
-| **Dashboard** | Personal greeting, today's overview, 5 stat cards (total, completed, pending, overdue, today), recent tasks, upcoming deadlines, completion ring, 7-day productivity chart, priority donut, Quick Add |
+| **Dashboard** | Personal greeting, today's overview, 6 stat cards (total, completed, pending, overdue, upcoming, today), recent tasks, upcoming deadlines, recent activity feed, completion ring, 7-day productivity chart, priority donut, Quick Add |
+| **Admin (User Management)** | Admins only: total/new/active/unverified user stats, 14-day sign-up chart, account status chart, searchable and paginated list of all users (name, email, ID with copy button, joined, last sign-in, status, task counts), individual user profile. Non-admins see "Administrators only". |
 | **Tasks** | Create / view details / edit / delete (with confirmation) / mark complete; title, description, category, priority, status, due date, optional due time; created/updated/completed timestamps |
 | **Views & filters** | All, Today, Upcoming, Pending, In Progress, Completed, Overdue, High Priority (with live counts); search by title; filter by category, priority, status; sort by newest, oldest, due date. All of these run as Supabase queries. |
 | **Categories** | 7 defaults per user; create, rename, recolour and delete custom categories. Deleting a category keeps its tasks and leaves them uncategorised. |
@@ -94,6 +123,7 @@ TASKFLOW/
 ├── calendar.html       Month / week / day calendar
 ├── analytics.html      Productivity analytics
 ├── settings.html       Profile, account, preferences, categories
+├── admin.html          Admin: user management (admins only)
 ├── style.css           Theme tokens, components and page styles
 ├── responsive.css      Tablet and phone layouts
 ├── supabase.js         ← your Supabase URL + anon key go here
@@ -104,7 +134,9 @@ TASKFLOW/
 ├── calendar.js         Calendar page
 ├── analytics.js        Analytics page
 ├── settings.js         Settings page
+├── admin.js            Admin page
 ├── supabase-setup.sql  Database setup script (run once in Supabase)
+├── supabase-admin.sql  Admin upgrade: admin_users table + secure admin functions
 └── README.md
 ```
 
@@ -145,6 +177,8 @@ These flows were tested in an automated headless browser (Chromium). The browser
 - ✅ Profile update, theme, default sort, notification toggles, category create/rename/delete/duplicate check, password change with current-password check
 - ✅ Data persists across reloads; theme follows the account after re-login
 - ✅ A second user sees none of the first user's tasks
+- ✅ Admin flow: non-admin gets "Administrators only", direct API calls and fake localStorage/JS admin flags return "Not authorized"; admin sees both accounts, search works, profile shows counts but no task contents; admin session survives refresh; logging in on a second device loads the right account
+- ✅ `supabase-admin.sql` on PostgreSQL 16: runs twice cleanly; non-admin and logged-out callers are rejected; nobody can insert themselves into `admin_users`; even the admin can't read another user's tasks directly
 - ✅ Task titles containing HTML are shown as text (XSS-safe)
 - ✅ No horizontal scrolling on iPhone 13 and tablet layouts; mobile drawer and bottom-sheet modals work
 - ✅ No JavaScript console errors

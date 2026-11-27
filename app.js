@@ -8,6 +8,7 @@
 
 /** Data loaded once per page for the signed-in user. */
 const App = {
+  isAdmin: false, // UI hint only – real checks happen in the database
   user: null,
   profile: null,
   settings: null,
@@ -298,6 +299,20 @@ function formatTime(t) {
 function formatDateTime(iso) {
   if (!iso) return '';
   return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+/** "just now", "5 min ago", "3 h ago", "2 days ago", or a date. */
+function timeAgo(iso) {
+  if (!iso) return 'Never';
+  const s = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s / 60)} min ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
+  if (s < 86400 * 7) {
+    const d = Math.floor(s / 86400);
+    return `${d} day${d === 1 ? '' : 's'} ago`;
+  }
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 /** "Today", "Tomorrow", "Yesterday" or a short date. */
@@ -813,6 +828,13 @@ function renderShell(page, { title, subtitle = '' }) {
         (q) => `<a href="tasks.html?view=${q.view}" class="nav-link ${page === 'tasks' && view === q.view ? 'active' : ''}">
           <i data-lucide="${q.icon}"></i><span>${q.label}</span></a>`
       ).join('')}
+      ${
+        App.isAdmin
+          ? `<p class="nav-heading">Administration</p>
+        <a href="admin.html" class="nav-link ${page === 'admin' ? 'active' : ''}" ${page === 'admin' ? 'aria-current="page"' : ''}>
+          <i data-lucide="shield-check"></i><span>User Management</span></a>`
+          : ''
+      }
     </nav>
     <div class="sidebar-footer">
       <a href="settings.html" class="user-card">${avatarHTML()}<span class="user-meta"><strong>${escapeHtml(displayName())}</strong><small>${escapeHtml(App.user.email)}</small></span></a>
@@ -911,13 +933,21 @@ async function initProtectedPage(page, shell) {
   });
 
   try {
-    const [profileRes, settingsRes] = await Promise.all([
+    const [profileRes, settingsRes, , adminRes] = await Promise.all([
       supabaseClient.from('profiles').select('*').eq('id', user.id).maybeSingle(),
       supabaseClient.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
       fetchCategories(),
+      // Only decides whether to SHOW the admin link. The admin data itself is
+      // protected inside the database. Fails quietly if supabase-admin.sql
+      // has not been run yet.
+      supabaseClient.rpc('is_admin').then(
+        (r) => r,
+        () => ({ data: false })
+      ),
     ]);
     App.profile = check(profileRes);
     App.settings = check(settingsRes);
+    App.isAdmin = !adminRes.error && adminRes.data === true;
 
     // Self-heal if the sign-up trigger did not create these rows
     if (!App.profile) {

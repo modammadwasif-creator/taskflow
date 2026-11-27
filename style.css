@@ -1,4 +1,4 @@
-/* =====================================================================
+ /* =====================================================================
    TASKFLOW – Main stylesheet
    Theme tokens → base → layout → components → pages
    ===================================================================== */
@@ -877,7 +877,8 @@ svg.lucide {
 /* Stats */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* fits 5 or 6 cards in one row on wide screens */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
   margin-bottom: 22px;
 }
@@ -2387,4 +2388,225 @@ a.stat-card:hover {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 4px;
+}
+
+/* =====================================================================
+   Admin – user management
+   ===================================================================== */
+.status-active { background: rgba(16, 185, 129, 0.13); color: #047857; }
+.status-inactive { background: var(--surface-2); color: var(--text-2); }
+.status-unverified { background: rgba(245, 158, 11, 0.14); color: #b45309; }
+.status-banned { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
+.admin-badge { background: var(--gradient); color: #fff; font-size: 10.5px; padding: 2px 8px; vertical-align: middle; }
+[data-theme='dark'] .status-active { color: #6ee7b7; }
+[data-theme='dark'] .status-unverified { color: #fcd34d; }
+[data-theme='dark'] .status-banned { color: #fca5a5; }
+.empty-icon.danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+.access-denied {
+  max-width: 560px;
+  margin: 40px auto;
+}
+.admin-users-head {
+  flex-wrap: wrap;
+}
+.admin-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1 1 320px;
+  justify-content: flex-end;
+}
+.admin-tools .search-box {
+  position: relative;
+  flex: 1;
+  max-width: 360px;
+}
+.admin-tools .search-box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  width: 16px;
+  height: 16px;
+}
+.admin-tools .search-box input {
+  padding-left: 36px;
+  height: 40px;
+}
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.data-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 12px 14px;
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.data-table tbody tr {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.data-table tbody tr:hover {
+  background: var(--surface-hover);
+}
+.data-table tbody tr:focus-visible {
+  box-shadow: inset var(--ring);
+}
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.user-cell > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.user-cell strong {
+  font-weight: 600;
+}
+.user-cell small {
+  color: var(--muted);
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.id-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+code.wrap {
+  word-break: break-all;
+  white-space: normal;
+}
+.icon-btn.sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.icon-btn.sm svg {
+  width: 14px;
+  height: 14px;
+}
+.row-open {
+  color: var(--muted);
+  text-align: right;
+}
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.pager > div {
+  display: flex;
+  gap: 8px;
+}
+.admin-privacy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.admin-privacy svg {
+  width: 15px;
+  height: 15px;
+}
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 20px 0 10px;
+}
+.progress-meta.six {
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+}
+
+/* Recent activity (dashboard) */
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.activity-item:hover {
+  background: var(--surface-hover);
+}
+.activity-item + .activity-item {
+  border-top: 1px solid var(--border);
+}
+.activity-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: var(--tone-bg);
+  color: var(--tone);
+}
+.activity-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.activity-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.activity-text strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.activity-time {
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
 }
